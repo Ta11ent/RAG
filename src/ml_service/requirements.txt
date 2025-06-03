@@ -1,0 +1,4 @@
+grpcio
+grpcio-tools
+faiss-cpu
+sentence-transformers

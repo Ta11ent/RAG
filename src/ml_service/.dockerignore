@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.ipynb
+*.csv
+*.npy
+*.pt
+*.onnx
+*.h5
+models/
+checkpoints/
+data/
+.env
+.git
+venv/
