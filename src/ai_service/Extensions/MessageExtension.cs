@@ -10,10 +10,13 @@ namespace AI_service.Extensions
             services.Scan(scan => scan
               .FromAssembliesOf(typeof(MessageExtension))
               .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)), publicOnly: false)
-              .AsImplementedInterfaces()
+                .AsImplementedInterfaces()
+              .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)), publicOnly: false)
+                .AsImplementedInterfaces()
               .WithScopedLifetime());
 
-            services.Decorate(typeof(IRequestHandler<,>), typeof(ValidationDecorator.CommandHandler<,>));
+            services.Decorate(typeof(IRequestHandler<,>), typeof(ValidationDecorator.RequestHandler<,>));
+            services.Decorate(typeof(IRequestHandler<>), typeof(ValidationDecorator.RequestBaseHandler<>));
 
             services.AddValidatorsFromAssembly(typeof(MessageExtension).Assembly, includeInternalTypes: true);
 

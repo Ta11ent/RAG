@@ -6,7 +6,7 @@ namespace AI_service.Shared.Behaviors
 {
     internal class ValidationDecorator
     {
-        internal sealed class CommandBaseHandler<TRequest>(
+        internal sealed class RequestBaseHandler<TRequest>(
             IRequestHandler<TRequest> inner,
             IEnumerable<IValidator<TRequest>> validators)
                 : IRequestHandler<TRequest> where TRequest : IRequest
@@ -31,7 +31,7 @@ namespace AI_service.Shared.Behaviors
             }
         }
 
-        internal sealed class CommandHandler<TRequest, TResponse>(
+        internal sealed class RequestHandler<TRequest, TResponse>(
            IRequestHandler<TRequest, TResponse> inner,
            IEnumerable<IValidator<TRequest>> validators)
             : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>

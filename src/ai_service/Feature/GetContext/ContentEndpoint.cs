@@ -1,0 +1,29 @@
+﻿using AI_service.Endpoints;
+using AI_service.Shared.Outcome;
+
+namespace AI_service.Feature.GetContext
+{
+    public class ContentEndpoint : IEndpoint
+    {
+        public record Query(string content);
+        public void MapEndpoint(IEndpointRouteBuilder app)
+        {
+            app.MapGet("Content", async (
+                Query data,
+                IRequestHandler<GetContentQuery, ContentResponse> handler,
+                CancellationToken token) =>
+            {
+                GetContentQuery query = new(data.content);
+
+                var result = await handler.Handle(query, token);
+
+                if (result.IsSuccess)
+                    return Results.Ok(result);
+
+                return result.Problem();
+
+            })
+            .WithTags(Tags.Content);
+        }
+    }
+}

@@ -7,9 +7,8 @@ namespace AI_service.Shared.DbContext
     {
         private readonly string _connectionString;
 
-        internal PostgreDbContext(IConfiguration configuration)
-            => _connectionString = configuration.GetConnectionString("PostgreSQL") 
-                ?? throw new ArgumentNullException(nameof(_connectionString));
+        internal PostgreDbContext(string connectionString)
+            => _connectionString = connectionString;
         public IDbConnection CreateConnection()
             => new NpgsqlConnection(_connectionString);
     }

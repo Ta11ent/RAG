@@ -5,11 +5,7 @@ namespace AI_service.Feature.TrainModel
 {
     internal sealed class TrainModelEndpoint : IEndpoint
     {
-        internal sealed class Request
-        {
-            internal int Tag { get; init; }
-            internal string Content { get; init; } = string.Empty;
-        }
+        internal sealed record Request(int tag, string content);
 
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
@@ -18,7 +14,7 @@ namespace AI_service.Feature.TrainModel
                 IRequestHandler<TrainModelCommand> handler,
                 CancellationToken token) =>
             {
-                TrainModelCommand command = new(request.Tag, request.Content);
+                TrainModelCommand command = new(request.tag, request.content);
 
                 Result result = await handler.Handle(command, token);
 
