@@ -2,6 +2,7 @@
 
 namespace AI_service.Shared.Domain
 {
+    [Table("Vectors")]
     internal class Vector
     {
         internal int Id { get; init; }

@@ -2,6 +2,7 @@
 
 namespace AI_service.Shared.Domain
 {
+    [Table("Texts")]
     internal class Text
     {
         internal int Id { get; init; }

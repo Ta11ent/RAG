@@ -2,6 +2,7 @@
 
 namespace AI_service.Shared.Domain
 {
+    [Table("VectorTags")]
     internal class VectorTag
     {
         internal int VectorId { get; init; }
