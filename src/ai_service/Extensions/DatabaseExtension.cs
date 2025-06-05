@@ -1,4 +1,5 @@
-﻿using AI_service.Shared.DbContext;
+﻿using AI_service.Shared.Data;
+using AI_service.Shared.DbContext;
 
 namespace AI_service.Extensions
 {
@@ -9,6 +10,7 @@ namespace AI_service.Extensions
             var connectionString = configuration.GetConnectionString("PostgreSQL");
 
             services.AddScoped<IDbContext>(conf => new PostgreDbContext(connectionString!));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
