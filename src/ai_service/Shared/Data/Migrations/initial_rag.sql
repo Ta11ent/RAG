@@ -1,24 +1,23 @@
 CREATE TABLE Texts (
-    Id SERIAL PRIMARY KEY,
+    Id UUID UNIQUE NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
     Content TEXT NOT NULL           
 );
 
 CREATE TABLE Tags (
-    Id SERIAL PRIMARY KEY,
+    Id UUID UNIQUE NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
     Name VARCHAR(50) NOT NULL UNIQUE    
 );
 
 CREATE TABLE Vectors (
-    Id SERIAL PRIMARY KEY,                
-    TextId INT NOT NULL,                  
-    VectorId UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),  
+    Id UUID UNIQUE NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,                
+    TextId UUID NOT NULL,                  
     CreatedAt TIMESTAMPTZ DEFAULT NOW(),  
     CONSTRAINT fk_text_id FOREIGN KEY (TextId) REFERENCES Texts(Id) ON DELETE CASCADE 
 );
 
 CREATE TABLE VectorTags (
-    VectorId UUID NOT NULL REFERENCES Vectors(VectorId) ON DELETE CASCADE, 
-    TagId INT NOT NULL REFERENCES Tags(Id) ON DELETE CASCADE,   
+    VectorId UUID NOT NULL REFERENCES Vectors(Id) ON DELETE CASCADE, 
+    TagId UUID NOT NULL REFERENCES Tags(Id) ON DELETE CASCADE,   
     PRIMARY KEY (VectorId, TagId)
 );
 
