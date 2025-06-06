@@ -12,26 +12,28 @@ namespace AI_service.Shared.Data
         private static readonly ConcurrentDictionary<Type, string[]> _fieldCache = new();
 
         public static async Task InsertAsync<T>(
-            this IUnitOfWork uow,
+            this IDbConnection connection,
             T entity,
+            IDbTransaction? transaction = null,
             CancellationToken cancellationToken = default) where T : class
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var sql = entity.GenerateInsertSql();
-            await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
+            await connection.ExecuteAsync(sql, entity, transaction);
         }
 
         public static async Task<TOut?> InsertAsync<T, TOut>(
-            this IUnitOfWork uow,
+            this IDbConnection connection,
             T entity,
             string returningField,
-            CancellationToken cancellationToken)
+            IDbTransaction? transaction = null,
+            CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var sql = entity.GenerateInsertReturningSql(returningField);
-            return await uow.Connection.ExecuteScalarAsync<TOut>(sql, entity, uow.Transaction);
+            return await connection.ExecuteScalarAsync<TOut>(sql, entity, transaction);
         }
 
         public static async Task<IEnumerable<T>> RawSelectAsync<T>(
