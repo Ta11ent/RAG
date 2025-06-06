@@ -5,7 +5,7 @@ namespace AI_service.Feature.TrainModel
 {
     internal interface ITrainingInputStoreService
     {
-        Task<Guid> StoreHandler(TrainModelCommand command, CancellationToken cancellationToken);
+        Task<Guid> StoreHandler(Guid tagId, string content, CancellationToken cancellationToken);
     }
 
     internal class TrainingInputStoreService : ITrainingInputStoreService
@@ -15,18 +15,11 @@ namespace AI_service.Feature.TrainModel
         internal TrainingInputStoreService(IUnitOfWork unitOfWork)
             => _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
-        public async Task<Guid> StoreHandler(TrainModelCommand command, CancellationToken cancellationToken)
+        public async Task<Guid> StoreHandler(Guid tagId, string content, CancellationToken cancellationToken)
         {
-            var text = Text.Create(command.content);
-
-            var vector = Vector.Create(
-                text.Id,
-                DateTime.UtcNow,
-                Guid.NewGuid());
-
-            var vectorTag = VectorTag.Create(
-                vector.Id,
-                command.tag);
+            var text = Text.Create(content);
+            var vector = Vector.Create(text.Id);
+            var vectorTag = VectorTag.Create(vector.Id, tagId);
 
             try
             {

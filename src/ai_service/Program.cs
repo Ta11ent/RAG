@@ -1,8 +1,11 @@
+using AI_service.Feature.TrainModel;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddMessage();
 builder.Services.AddDbConnection(builder.Configuration);
+builder.Services.AddTrainModelFeature();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 

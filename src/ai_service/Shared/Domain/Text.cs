@@ -12,6 +12,7 @@ namespace AI_service.Shared.Domain
         {
             return new()
             {
+                Id = Guid.NewGuid(),
                 Content = content
             };
         }

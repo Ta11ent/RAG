@@ -8,18 +8,14 @@ namespace AI_service.Shared.Domain
         public Guid Id { get; init; }
         public Guid TextId { get; init; }
         public DateTime CreatedAt { get; init; }
-        public Guid VectorId { get; init; }
 
-        public static Vector Create(
-            Guid TextId, 
-            DateTime CreatedAt, 
-            Guid VecoreId)
+        public static Vector Create(Guid TextId)
         {
             return new()
             {
+                Id = Guid.NewGuid(),
                 TextId = TextId,
-                CreatedAt = CreatedAt,
-                VectorId = VecoreId
+                CreatedAt = DateTime.UtcNow,
             };
         }
     }

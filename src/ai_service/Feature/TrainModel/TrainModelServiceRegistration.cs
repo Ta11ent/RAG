@@ -2,8 +2,9 @@
 {
     internal static class TrainModelServiceRegistration
     {
-        internal static IServiceCollection AddTrainModelServices(this IServiceCollection services)
+        internal static IServiceCollection AddTrainModelFeature(this IServiceCollection services)
         {
+            services.AddScoped<ITrainingInputStoreService, TrainingInputStoreService>();
             return services;
         }
     }

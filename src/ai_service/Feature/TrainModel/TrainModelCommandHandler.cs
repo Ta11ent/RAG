@@ -4,9 +4,21 @@ namespace AI_service.Feature.TrainModel
 {
     internal sealed class TrainModelCommandHandler : IRequestHandler<TrainModelCommand>
     {
-        public Task<Result> Handle(TrainModelCommand request, CancellationToken cancellationToken)
+        private readonly ITrainingInputStoreService _inputStoreService;
+
+        internal TrainModelCommandHandler(ITrainingInputStoreService inputStoreService)
         {
-            throw new NotImplementedException();
+            _inputStoreService = inputStoreService;
+        }
+
+        public async Task<Result> Handle(TrainModelCommand command, CancellationToken cancellationToken)
+        {
+            var vectorId = await _inputStoreService.StoreHandler(
+                command.tag,
+                command.content,
+                cancellationToken);
+
+            return Result.Success();
         }
     }
 }
