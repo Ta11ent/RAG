@@ -37,13 +37,15 @@ namespace AI_service.Shared.Data
         }
 
         public static async Task<IEnumerable<T>> RawSelectAsync<T>(
-            this IUnitOfWork uow,
+            this IDbConnection connection,
             string sql,
             object? parameters = null,
+            IDbTransaction? transaction = null, 
             CancellationToken cancellationToken = default) where T : class
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return await uow.Connection.QueryAsync<T>(sql, parameters, uow.Transaction);
+
+            return await connection.QueryAsync<T>(sql, parameters, transaction);
         }
 
         private static string GenerateInsertSql<T>(this T entity)
