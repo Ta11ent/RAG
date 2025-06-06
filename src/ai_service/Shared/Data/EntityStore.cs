@@ -22,6 +22,18 @@ namespace AI_service.Shared.Data
             await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
         }
 
+        public static async Task<TOut?> InsertAsync<T, TOut>(
+            this IUnitOfWork uow,
+            T entity,
+            string returningField,
+            CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var sql = entity.GenerateInsertReturningSql(returningField);
+            return await uow.Connection.ExecuteScalarAsync<TOut>(sql, entity, uow.Transaction);
+        }
+
         public static async Task<IEnumerable<T>> RawSelectAsync<T>(
             this IUnitOfWork uow,
             string sql,
@@ -49,6 +61,11 @@ namespace AI_service.Shared.Data
             _sqlCache.TryAdd(type.GetCacheKey(TypeOfOperation.Insert), sql);
 
             return sql;
+        }
+
+        private static string GenerateInsertReturningSql<T>(this T entity, string returningField)
+        {
+            return $"{entity.GenerateInsertSql()} RETURNING {returningField}";
         }
 
         private static string[] GetTableFields(this Type type)
