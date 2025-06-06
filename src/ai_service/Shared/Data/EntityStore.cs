@@ -17,8 +17,16 @@ namespace AI_service.Shared.Data
             CancellationToken cancellationToken = default) where T : class
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var sql = entity.GenerateInsertSql();
-            await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
+
+            try
+            {
+                var sql = entity.GenerateInsertSql();
+                await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public static async Task<IEnumerable<T>> RawSelectAsync<T>(
@@ -28,7 +36,15 @@ namespace AI_service.Shared.Data
             CancellationToken cancellationToken = default) where T : class
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return await uow.Connection.QueryAsync<T>(sql, parameters, uow.Transaction);
+
+            try
+            {
+                return await uow.Connection.QueryAsync<T>(sql, parameters, uow.Transaction);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         private static string GenerateInsertSql<T>(this T entity)
