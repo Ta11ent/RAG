@@ -18,15 +18,20 @@ namespace AI_service.Shared.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            try
-            {
-                var sql = entity.GenerateInsertSql();
-                await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
-            }
-            catch
-            {
-                throw;
-            }
+            var sql = entity.GenerateInsertSql();
+            await uow.Connection.ExecuteAsync(sql, entity, uow.Transaction);
+        }
+
+        public static async Task<TOut?> InsertAsync<T, TOut>(
+            this IUnitOfWork uow,
+            T entity,
+            string returningField,
+            CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var sql = entity.GenerateInsertReturningSql(returningField);
+            return await uow.Connection.ExecuteScalarAsync<TOut>(sql, entity, uow.Transaction);
         }
 
         public static async Task<IEnumerable<T>> RawSelectAsync<T>(
@@ -36,15 +41,7 @@ namespace AI_service.Shared.Data
             CancellationToken cancellationToken = default) where T : class
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            try
-            {
-                return await uow.Connection.QueryAsync<T>(sql, parameters, uow.Transaction);
-            }
-            catch
-            {
-                throw;
-            }
+            return await uow.Connection.QueryAsync<T>(sql, parameters, uow.Transaction);
         }
 
         private static string GenerateInsertSql<T>(this T entity)
@@ -66,6 +63,11 @@ namespace AI_service.Shared.Data
             return sql;
         }
 
+        private static string GenerateInsertReturningSql<T>(this T entity, string returningField)
+        {
+            return $"{entity.GenerateInsertSql()} RETURNING {returningField}";
+        }
+
         private static string[] GetTableFields(this Type type)
         {
             if (_fieldCache.TryGetValue(type, out var fields))
@@ -84,7 +86,7 @@ namespace AI_service.Shared.Data
 
         private static string GetTableName(this Type type)
         {
-            return type.GetCustomAttribute<TableAttribute>()?.Name ?? type.Name; 
+            return type.GetCustomAttribute<TableAttribute>()?.Name ?? type.Name;
         }
 
         private static string GetCacheKey(this Type type, TypeOfOperation operation)
