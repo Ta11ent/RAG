@@ -3,9 +3,9 @@
 namespace AI_service.Shared.Domain
 {
     [Table("Tags")]
-    internal class Tag
+    public class Tag
     {
-        internal int Id { get; init; }
-        internal string Name { get; init; } = string.Empty;
+        public Guid Id { get; init; }
+        public string Name { get; init; } = string.Empty;
     }
 }

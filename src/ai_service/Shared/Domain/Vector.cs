@@ -3,11 +3,24 @@
 namespace AI_service.Shared.Domain
 {
     [Table("Vectors")]
-    internal class Vector
+    public class Vector
     {
-        internal int Id { get; init; }
-        internal int TextId { get; init; }
-        internal DateTime CreatedAt { get; init; }
-        internal int VectorId { get; init; }
+        public Guid Id { get; init; }
+        public Guid TextId { get; init; }
+        public DateTime CreatedAt { get; init; }
+        public Guid VectorId { get; init; }
+
+        public static Vector Create(
+            Guid TextId, 
+            DateTime CreatedAt, 
+            Guid VecoreId)
+        {
+            return new()
+            {
+                TextId = TextId,
+                CreatedAt = CreatedAt,
+                VectorId = VecoreId
+            };
+        }
     }
 }

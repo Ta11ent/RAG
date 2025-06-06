@@ -3,9 +3,20 @@
 namespace AI_service.Shared.Domain
 {
     [Table("VectorTags")]
-    internal class VectorTag
+    public class VectorTag
     {
-        internal int VectorId { get; init; }
-        internal int TagId { get; init; }
+        public Guid VectorId { get; init; }
+        public Guid TagId { get; init; }
+
+        public static VectorTag Create(
+            Guid vectorId,
+            Guid tagId)
+        {
+            return new VectorTag()
+            {
+                VectorId = vectorId,
+                TagId = tagId
+            };
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace AI_service.Shared.Data
         public IDbTransaction Transaction 
             => _transaction ?? throw new InvalidOperationException("Transaction has not been started.");
 
-        public void Begin()
+        public void BeginTransaction()
             => _transaction = _dbConnection.BeginTransaction();
 
         public void Commit()

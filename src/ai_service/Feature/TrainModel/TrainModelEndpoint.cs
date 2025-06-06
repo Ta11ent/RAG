@@ -5,7 +5,7 @@ namespace AI_service.Feature.TrainModel
 {
     internal sealed class TrainModelEndpoint : IEndpoint
     {
-        internal sealed record Request(int tag, string content);
+        internal sealed record Request(Guid tag, string content);
 
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
