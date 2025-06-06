@@ -4,7 +4,7 @@ namespace AI_service.Shared.Data
 {
     public interface IUnitOfWork : IDisposable
     {
-        void Begin();
+        IDbTransaction BeginTransaction();
         void Commit();
         void Rollback();
         IDbConnection Connection { get; }
