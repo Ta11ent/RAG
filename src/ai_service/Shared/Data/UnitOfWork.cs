@@ -1,37 +1,36 @@
-﻿using AI_service.Shared.DbContext;
-using System.Data;
+﻿using System.Data;
 
 namespace AI_service.Shared.Data
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IDbConnection _dbConnection;
         private IDbTransaction? _transaction;
         private bool _disposed = false;
-
-        public UnitOfWork(IDbContext dbContext)
-        {
-            _dbConnection = dbContext.CreateConnection() ?? throw new ArgumentNullException(nameof(dbContext));
-            _dbConnection.Open();
-        }
-
-        public IDbConnection Connection
-            => _dbConnection;
 
         public IDbTransaction Transaction 
             => _transaction ?? throw new InvalidOperationException("Transaction has not been started.");
 
-        public IDbTransaction BeginTransaction()
-            => _transaction = _dbConnection.BeginTransaction();
+        public IDbTransaction BeginTransaction(IDbConnection connection)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                throw new InvalidOperationException("Connection is not Open");
+            }
+
+            _transaction = connection.BeginTransaction();
+            return _transaction;
+        }
 
         public void Commit()
         {
+            EnsureTransactionStarted();
             _transaction?.Commit();
             Dispose();
         }
 
         public void Rollback()
         {
+            EnsureTransactionStarted();
             _transaction?.Rollback();
             Dispose();
         }
@@ -41,7 +40,7 @@ namespace AI_service.Shared.Data
             GC.SuppressFinalize(this);
         }
 
-        void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_disposed)
             {
@@ -49,14 +48,17 @@ namespace AI_service.Shared.Data
                 {
                     _transaction?.Dispose();
                     _transaction = null;
-
-                    if (_dbConnection.State != ConnectionState.Closed)
-                        _dbConnection.Close();
-
-                    _dbConnection.Dispose();
                 }
             }
             _disposed = true;
+        }
+
+        private void EnsureTransactionStarted()
+        {
+            if (_transaction == null)
+            {
+                throw new InvalidOperationException("Transaction has not been started.");
+            }
         }
     }
 }
