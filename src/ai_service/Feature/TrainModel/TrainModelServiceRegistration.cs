@@ -4,7 +4,7 @@
     {
         internal static IServiceCollection AddTrainModelFeature(this IServiceCollection services)
         {
-            services.AddScoped<ITrainingInputStoreService, TrainingInputStoreService>();
+            services.AddScoped<IVectorRepository, VectorRepository>();
             return services;
         }
     }

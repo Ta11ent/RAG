@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using AI_service.Shared.DbContext;
+using System.Data;
 
 namespace AI_service.Shared.Data
 {
@@ -8,9 +9,9 @@ namespace AI_service.Shared.Data
         private IDbTransaction? _transaction;
         private bool _disposed = false;
 
-        public UnitOfWork(IDbConnection dbConnection)
+        public UnitOfWork(IDbContext dbContext)
         {
-            _dbConnection = dbConnection ?? throw new ArgumentNullException(nameof(dbConnection));
+            _dbConnection = dbContext.CreateConnection() ?? throw new ArgumentNullException(nameof(dbContext));
             _dbConnection.Open();
         }
 
@@ -48,6 +49,11 @@ namespace AI_service.Shared.Data
                 {
                     _transaction?.Dispose();
                     _transaction = null;
+
+                    if (_dbConnection.State != ConnectionState.Closed)
+                        _dbConnection.Close();
+
+                    _dbConnection.Dispose();
                 }
             }
             _disposed = true;

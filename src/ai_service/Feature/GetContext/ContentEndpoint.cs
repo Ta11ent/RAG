@@ -1,5 +1,6 @@
 ﻿using AI_service.Endpoints;
 using AI_service.Shared.Outcome;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AI_service.Feature.GetContext
 {
@@ -9,8 +10,8 @@ namespace AI_service.Feature.GetContext
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapGet("Content", async (
-                Query data,
-                IRequestHandler<GetContentQuery, ContentResponse> handler,
+                [FromBody] Query data,
+                [FromServices] IRequestHandler<GetContentQuery, ContentResponse> handler,
                 CancellationToken token) =>
             {
                 GetContentQuery query = new(data.content);

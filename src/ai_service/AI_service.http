@@ -1,6 +1,11 @@
-@AI_service_HostAddress = http://localhost:5284
-
-GET {{AI_service_HostAddress}}/weatherforecast/
-Accept: application/json
+@AI_service_HostAddress_http = http://localhost:5284
+@AI_service_HostAddress_https = https://localhost:7208
 
 ###
+POST https://localhost:7208/TrainModel
+Content-Type: application/json
+
+{
+  "tagId": "bbdb35e9-959a-43e6-adbb-255e82e55630",
+  "content" : "Hi Ai"
+}
