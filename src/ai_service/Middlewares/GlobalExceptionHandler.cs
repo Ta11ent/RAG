@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AI_service.Middlewares
 {
-    internal sealed class GlobalExceptionHandler() //ILogger<GlobalExceptionHandler> logger
-     : IExceptionHandler
+    public sealed class GlobalExceptionHandler : IExceptionHandler
     {
+        private readonly ILogger<GlobalExceptionHandler> _logger;
+
+        public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) => _logger = logger;
+
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext,
             Exception exception,
             CancellationToken cancellationToken)
         {
-           // logger.LogError(exception, "Unhandled exception occurred");
+           _logger.LogError(exception, "Unhandled exception occurred");
 
             var problemDetails = new ProblemDetails
             {
