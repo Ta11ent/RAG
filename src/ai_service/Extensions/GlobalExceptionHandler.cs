@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AI_service.Middlewares
+namespace AI_service.Extensions
 {
     public sealed class GlobalExceptionHandler : IExceptionHandler
     {
