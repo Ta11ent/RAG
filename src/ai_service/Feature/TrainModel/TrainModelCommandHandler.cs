@@ -24,7 +24,7 @@ namespace AI_service.Feature.TrainModel
 
             //var vectorId = await _trainService.TrainModel(command.content, command.tagId, cancellationToken);
 
-            Guid vectorId = Guid.NewGuid();
+            Guid vectorId = Guid.NewGuid();//temp
 
             await _repository.AddVectorAsync(command.tagId, vectorId, textId, cancellationToken);
 

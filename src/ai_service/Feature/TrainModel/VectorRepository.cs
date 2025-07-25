@@ -34,7 +34,7 @@ namespace AI_service.Feature.TrainModel
         public async Task AddVectorAsync(Guid tagId, Guid vectorId, Guid textId, CancellationToken cancellationToken)
         {
             var vector = Vector.Create(textId, vectorId);
-            var vectorTags = VectorTag.Create(vectorId, tagId);
+            var vectorTags = VectorTag.Create(vector.Id, tagId);
 
             using var connection = _dbContext.CreateConnection();
             connection.Open();

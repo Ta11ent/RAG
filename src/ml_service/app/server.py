@@ -1,28 +1,48 @@
 from concurrent import futures
 import grpc
-from generated import search_pb2, search_pb2_grpc
-from app.model import VectorSearchModel
+from generated import ml_pb2, ml_pb2_grpc
+from model import VectorModel
 
-class VectorSearchService(search_pb2_grpc.VectorSearchServicer):
+
+class VectorService(ml_pb2_grpc.VectorServicer):
     def __init__(self):
-        self.model = VectorSearchModel()
+        self.model = VectorModel()
 
     def Search(self, request, context):
-        result_ids = self.model.search(request.query, request.top_k)
-        return search_pb2.SearchResponse(ids=result_ids)
+        tags = list(request.tags)
+        results = self.model.search(request.query, request.top_k, tags_filter=tags)
+
+        search_results = []
+        for r in results:
+            search_results.append(ml_pb2.SearchResult(
+                id=r["id"],
+                #text=r["text"],
+                #score=r["score"],
+                #tags=r["tags"]
+            ))
+
+        return ml_pb2.SearchResponse(results=search_results)
 
     def Train(self, request, context):
-        entries = [{"id": entry.id, "text": entry.text} for entry in request.entries]
-        success = self.model.train(entries)
-        return search_pb2.TrainResponse(success=success, message="Index updated" if success else "Failed")
+        entries = []
+        for entry in request.entries:
+            entries.append({
+                "text": entry.text,
+                "tags": list(entry.tags)
+            })
+
+        ids = self.model.train(entries)
+        return ml_pb2.TrainResponse(success=True, ids=ids)
+
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    search_pb2_grpc.add_VectorSearchServicer_to_server(VectorSearchService(), server)
+    ml_pb2_grpc.add_VectorServicer_to_server(VectorService(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     print("gRPC server running on port 50051...")
     server.wait_for_termination()
+
 
 if __name__ == '__main__':
     serve()

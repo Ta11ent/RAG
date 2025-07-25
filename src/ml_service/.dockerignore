@@ -8,9 +8,11 @@ __pycache__/
 *.pt
 *.onnx
 *.h5
-models/
-checkpoints/
+*.egg-info/
+build/
+dist/
+.git/
+.idea/
 data/
 .env
-.git
 venv/

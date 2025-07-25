@@ -1,25 +1,30 @@
-FROM python:3.13-slim as builder
+FROM python:3.13-slim AS builder
 
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential && \
-    rm -rf /var/lib/apt/lists/*  # Очистить кэш apt
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        git \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt . 
-RUN pip install --no-cache-dir -r requirements.txt  # Устанавливаем зависимости
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --prefix=/install -r requirements.txt
 
+# Финальный слой
 FROM python:3.13-slim
 
 WORKDIR /app
 
-COPY --from=builder /app /app
+COPY --from=builder /install /usr/local
+COPY . .
 
-COPY . . 
+ENV PYTHONPATH=/app
 
 ARG PORT=50051
 ENV PORT=${PORT}
 
 EXPOSE $PORT
 
-CMD ["python", "-u", "server.py"]
+CMD ["python", "-u", "app/server.py"]

@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import ml_pb2 as ml__pb2
+from . import ml_pb2 as ml__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class VectorSearchStub(object):
+class VectorStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -35,18 +35,18 @@ class VectorSearchStub(object):
             channel: A grpc.Channel.
         """
         self.Train = channel.unary_unary(
-                '/ml.VectorSearch/Train',
+                '/ml.Vector/Train',
                 request_serializer=ml__pb2.TrainRequest.SerializeToString,
                 response_deserializer=ml__pb2.TrainResponse.FromString,
                 _registered_method=True)
         self.Search = channel.unary_unary(
-                '/ml.VectorSearch/Search',
+                '/ml.Vector/Search',
                 request_serializer=ml__pb2.SearchRequest.SerializeToString,
                 response_deserializer=ml__pb2.SearchResponse.FromString,
                 _registered_method=True)
 
 
-class VectorSearchServicer(object):
+class VectorServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Train(self, request, context):
@@ -62,7 +62,7 @@ class VectorSearchServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_VectorSearchServicer_to_server(servicer, server):
+def add_VectorServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Train': grpc.unary_unary_rpc_method_handler(
                     servicer.Train,
@@ -76,13 +76,13 @@ def add_VectorSearchServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'ml.VectorSearch', rpc_method_handlers)
+            'ml.Vector', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('ml.VectorSearch', rpc_method_handlers)
+    server.add_registered_method_handlers('ml.Vector', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class VectorSearch(object):
+class Vector(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -99,7 +99,7 @@ class VectorSearch(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ml.VectorSearch/Train',
+            '/ml.Vector/Train',
             ml__pb2.TrainRequest.SerializeToString,
             ml__pb2.TrainResponse.FromString,
             options,
@@ -126,7 +126,7 @@ class VectorSearch(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ml.VectorSearch/Search',
+            '/ml.Vector/Search',
             ml__pb2.SearchRequest.SerializeToString,
             ml__pb2.SearchResponse.FromString,
             options,
