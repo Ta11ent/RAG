@@ -1,3 +1,4 @@
+import os
 from concurrent import futures
 import grpc
 from generated import ml_pb2, ml_pb2_grpc
@@ -36,11 +37,12 @@ class VectorService(ml_pb2_grpc.VectorServicer):
 
 
 def serve():
+    port = os.getenv("PORT", 50051)
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     ml_pb2_grpc.add_VectorServicer_to_server(VectorService(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port(f'[::]:{port}')
     server.start()
-    print("gRPC server running on port 50051...")
+    print(f"gRPC server running on port {port}...")
     server.wait_for_termination()
 
 
