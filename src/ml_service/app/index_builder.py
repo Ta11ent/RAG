@@ -3,8 +3,10 @@ import pickle
 import faiss
 from sentence_transformers import SentenceTransformer
 from pathlib import Path
+import numpy as np
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("all-mpnet-base-v2")
+#all-MiniLM-L6-v2
 
 base_dir = Path(__file__).resolve().parent
 data_dir = base_dir / "data"
@@ -18,8 +20,10 @@ texts = [item["text"] for item in data]
 ids = [item["id"] for item in data]
 tags = [item["tags"] for item in data] 
 
-embeddings = model.encode(texts, convert_to_numpy=True)
-index = faiss.IndexFlatL2(embeddings.shape[1])
+#embeddings = model.encode(texts, convert_to_numpy=True)
+#index = faiss.IndexFlatL2(embeddings.shape[1])
+embeddings = model.encode(texts, convert_to_numpy=True, normalize_embeddings=True)
+index = faiss.IndexFlatIP(embeddings.shape[1]) 
 index.add(embeddings)
 
 index_file = data_dir / "index.faiss"

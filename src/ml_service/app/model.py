@@ -4,13 +4,15 @@ import faiss
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
 import logging
+import numpy as np
 
 logging.basicConfig(level=logging.INFO)
 
 class VectorModel:
-    def __init__(self, model_name="all-MiniLM-L6-v2", dim=384):
+    def __init__(self, model_name="all-MiniLM-L6-v2"): # dim=384
         self.model = SentenceTransformer(model_name)
-        self.dim = dim
+        self.dim = self.model.get_sentence_embedding_dimension()
+        #self.dim = dim
 
         base_dir = Path(__file__).resolve().parent
         data_dir = base_dir / "data"
@@ -21,7 +23,8 @@ class VectorModel:
         self.tag_map_file = data_dir / "tag_map.pkl"
 
         # Инициализация FAISS индекса
-        self.index = faiss.IndexFlatL2(dim)
+        #self.index = faiss.IndexFlatL2(dim)
+        self.index = faiss.IndexFlatIP(self.dim)
         self.ids = []  # Список ID
         self.tags = []  # Список тегов
 
@@ -43,33 +46,33 @@ class VectorModel:
             pickle.dump(self.tags, f)
 
     def search(self, query: str, top_k: int, tags_filter=None):
-        # Преобразование запроса в вектор
-        query_vector = self.model.encode([query], convert_to_numpy=True)
-        logging.debug(f"Query '{query}' converted to vector: {query_vector}")
+        query_vector = self.model.encode([query], convert_to_numpy=True, normalize_embeddings=True)
 
-        # Фильтрация по тегам перед поиском
-        if tags_filter:
-            logging.debug(f"Filtering by tags: {tags_filter}")
-            filtered_indices = [i for i, tag in enumerate(self.tags) if set(tags_filter).issubset(set(tag))]
-            filtered_ids = [self.ids[i] for i in filtered_indices]
-        else:
-            filtered_ids = self.ids
+        if self.index.ntotal == 0:
+            logging.warning("FAISS index is empty! No data to search.")
+            return []
 
-        # Поиск по индексу FAISS для отфильтрованных векторов
         distances, indices = self.index.search(query_vector, top_k)
-        logging.debug(f"Search found {len(distances[0])} results: {list(indices[0])}")
 
-        # Составляем список результатов с фильтрацией по тегам
         results = []
         for dist, idx in zip(distances[0], indices[0]):
-            if idx == -1 or idx >= len(filtered_ids):
+            if idx == -1 or idx >= len(self.ids):
                 continue
+
+            similarity = float(dist)  
+            if similarity < 0.4:
+                continue
+
+            item_tags = self.tags[idx]
+            if tags_filter and not set(tags_filter).issubset(set(item_tags)):
+                continue
+
             results.append({
-                "id": filtered_ids[idx], 
-                "score": float(dist)
+                "id": self.ids[idx],
+                "score": similarity,
+                "tags": item_tags
             })
 
-        logging.debug(f"Returning top {len(results)} results: {results}")
         return results[:top_k]
 
     def train(self, entries: list[dict]):
@@ -85,6 +88,7 @@ class VectorModel:
         logging.info(f"Training with {len(entries)} entries")
 
         # Добавление новых векторов в FAISS
+        vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
         self.index.add(vectors)
         self.ids.extend([entry["id"] for entry in entries])
         self.tags.extend([entry["tags"] for entry in entries])
