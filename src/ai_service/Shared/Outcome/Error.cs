@@ -33,6 +33,9 @@
 
         internal static Error Conflict(string code, string description) =>
             new(code, description, ErrorType.Conflict);
+
+        internal static Error Unavailable(string code, string description) =>
+            new(code, description, ErrorType.Unavailable);
     }
 
     internal enum ErrorType
@@ -41,6 +44,7 @@
         Validation = 1,
         Problem = 2,
         NotFound = 3,
-        Conflict = 4
+        Conflict = 4,
+        Unavailable = 5
     }
 }

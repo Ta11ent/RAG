@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AI_service.Shared.Domain
+namespace AI_service.Shared.Domain.Entities
 {
     [Table("Vectors")]
     public class Vector

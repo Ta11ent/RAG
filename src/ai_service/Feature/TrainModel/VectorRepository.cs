@@ -1,6 +1,6 @@
 ﻿using AI_service.Shared.Data;
 using AI_service.Shared.DbContext;
-using AI_service.Shared.Domain;
+using AI_service.Shared.Domain.Entities;
 using Dapper;
 
 namespace AI_service.Feature.TrainModel
