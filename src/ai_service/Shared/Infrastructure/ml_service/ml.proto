@@ -1,0 +1,36 @@
+﻿syntax = "proto3";
+
+package ml;
+
+service Vector {
+  rpc Train(TrainRequest) returns (TrainResponse);
+  rpc Search(SearchRequest) returns (SearchResponse);
+}
+
+message DataEntry {
+  string text = 1;
+  repeated string tags = 2;
+}
+
+message TrainRequest {
+  repeated DataEntry entries = 1;
+}
+
+message TrainResponse {
+  bool success = 1;
+  repeated string ids = 2;
+}
+
+message SearchRequest {
+  string query = 1;
+  repeated string tags = 2;
+  int32 top_k = 3;
+}
+
+message SearchResponse {
+  repeated SearchResult results = 1;
+}
+
+message SearchResult {
+  string id = 1;
+}

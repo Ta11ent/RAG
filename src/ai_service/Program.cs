@@ -8,6 +8,7 @@ builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configu
 builder.Services.AddOpenApi();
 builder.Services.AddMessage();
 builder.Services.AddDbConnection(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddTrainModelFeature();
 builder.Services.AddEndpointsApiExplorer();
 

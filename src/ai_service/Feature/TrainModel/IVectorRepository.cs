@@ -1,4 +1,4 @@
-﻿using AI_service.Shared.Domain;
+﻿using AI_service.Shared.Domain.Entities;
 
 namespace AI_service.Feature.TrainModel
 {
