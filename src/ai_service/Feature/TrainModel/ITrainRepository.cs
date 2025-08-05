@@ -12,7 +12,7 @@ namespace AI_service.Feature.TrainModel
             IDbTransaction? dbTransaction = null);
 
         Task AddPayloadTagAsync(
-            PayloadTag payloadTag,
+            IEnumerable<PayloadTag> payloadTag,
             IDbConnection connection, 
             CancellationToken cancellationToken,
             IDbTransaction? dbTransaction = null);

@@ -34,11 +34,7 @@ namespace AI_service.Feature.TrainModel
             try
             {
                 await _trainRepository.AddPayloadAsync(payload, connection, cancellationToken);
-
-                var tasks = payloadTags.Select(value =>
-                    _trainRepository.AddPayloadTagAsync(value, connection, cancellationToken));
-
-                await Task.WhenAll(tasks);
+                await _trainRepository.AddPayloadTagAsync(payloadTags, connection, cancellationToken);
 
                 _unitOfWork.Commit();
             }

@@ -1,6 +1,4 @@
-﻿using AI_service.Shared.Domain.Entities;
-
-namespace AI_service.Feature.TrainModel
+﻿namespace AI_service.Feature.TrainModel
 {
     public interface ITrainService
     {
