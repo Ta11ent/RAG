@@ -6,17 +6,17 @@ using Polly;
 
 namespace AI_service.Shared.Behaviors
 {
-    internal class RetryInceraptor : Interceptor
+    internal sealed class RetryInceraptor : Interceptor
     {
         private readonly ILogger<RetryInceraptor> _logger;
         private readonly GrpcMlServiceSettings _option;
 
-        internal RetryInceraptor(
+        public RetryInceraptor(
             ILogger<RetryInceraptor> logger,
             IOptions<GrpcMlServiceSettings> options)
         {
             _logger = logger;
-            _option = options.Value;
+            _option = options.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         public override AsyncUnaryCall<TResponse> AsyncUnaryCall<TRequest, TResponse>(

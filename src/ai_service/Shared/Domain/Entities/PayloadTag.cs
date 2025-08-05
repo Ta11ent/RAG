@@ -2,19 +2,19 @@
 
 namespace AI_service.Shared.Domain.Entities
 {
-    [Table("VectorTags")]
-    public class VectorTag
+    [Table("PayloadTags")]
+    public class PayloadTag
     {
-        public Guid VectorId { get; init; }
+        public Guid PayloadId { get; init; }
         public Guid TagId { get; init; }
 
-        public static VectorTag Create(
-            Guid vectorId,
+        public static PayloadTag Create(
+            Guid payloadId,
             Guid tagId)
         {
-            return new VectorTag()
+            return new PayloadTag()
             {
-                VectorId = vectorId,
+                PayloadId = payloadId,
                 TagId = tagId
             };
         }

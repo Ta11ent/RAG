@@ -6,6 +6,8 @@ POST https://localhost:7208/TrainModel
 Content-Type: application/json
 
 {
-  "tagId": "bbdb35e9-959a-43e6-adbb-255e82e55630",
+  "tagIds": [
+    "5b39efee-8d03-4e68-9df3-44ba375e8b7b"
+  ],
   "content" : "Test2"
 }

@@ -14,6 +14,7 @@ namespace AI_service.Extensions
             .AddInterceptor<RetryInceraptor>();
 
             services.AddTransient<IMlServiceClient, MlServiceClient>();
+            services.AddTransient<RetryInceraptor>();
 
             return services;
         }

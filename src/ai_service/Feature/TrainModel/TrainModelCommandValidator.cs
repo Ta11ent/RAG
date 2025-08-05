@@ -7,7 +7,9 @@ namespace AI_service.Feature.TrainModel
         public TrainModelCommandValidator()
         {
             RuleFor(x => x.content).NotEmpty();
-            RuleFor(x => x.tagId).NotEqual(Guid.Empty);
+            RuleFor(x => x.tagIds)
+                .Must(tags => tags.Any(tag => tag != Guid.Empty))
+                .WithMessage("At least one tag ID must be provided and not be empty.");
         }
     }
 }
