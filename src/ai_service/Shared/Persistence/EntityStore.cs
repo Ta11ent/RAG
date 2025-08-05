@@ -59,8 +59,8 @@ namespace AI_service.Shared.Data
             var tableFields = type.GetTableFields();
 
             sql =
-                $"INSERT INTO {tableName} ({string.Join(", ", tableFields)}) " +
-                $"VALUES ({string.Join(", ", tableFields.Select(f => "@" + f))})";
+                $"INSERT INTO {tableName} ({string.Join(", ", tableFields.Select(f => $"{f}"))})" +
+                $"VALUES ({string.Join(", ", tableFields.Select(f => $"@{f}"))})";
 
             _sqlCache.TryAdd(type.GetCacheKey(TypeOfOperation.Insert), sql);
 
