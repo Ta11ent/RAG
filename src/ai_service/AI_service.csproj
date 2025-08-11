@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Shared\Infrastructure\ml_service\ml.proto" GrpcServices="Client" Namespace="AI_Service.Grpc" />
+    <Protobuf Include="Shared/Infrastructure/ml_service/ml.proto" GrpcServices="Client" Namespace="AI_Service.Grpc" />
   </ItemGroup>
 
 </Project>
