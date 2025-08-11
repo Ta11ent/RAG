@@ -1,24 +1,24 @@
-name: .NET CI – Ai_service
+# name: .NET CI – Ai_service
 
-on:
-  pull_request:
-    branches: [main]
+# on:
+#   pull_request:
+#     branches: [main]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
 
-    - name: Setup .NET 9
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.302'
+#     - name: Setup .NET 9
+#       uses: actions/setup-dotnet@v4
+#       with:
+#         dotnet-version: '9.0.302'
 
-    - name: Restore
-      run: dotnet restore src/ai_service/AI_service.csproj
+#     - name: Restore
+#       run: dotnet restore src/ai_service/AI_service.csproj
 
-    - name: Build
-      run: dotnet build src/ai_service/AI_service.csproj --configuration Release --no-restore
+#     - name: Build
+#       run: dotnet build src/ai_service/AI_service.csproj --configuration Release --no-restore
