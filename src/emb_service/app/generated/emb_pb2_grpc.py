@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from . import ml_pb2 as ml__pb2
+from . import emb_pb2 as emb__pb2
 
 GRPC_GENERATED_VERSION = '1.74.0'
 GRPC_VERSION = grpc.__version__
@@ -18,7 +18,7 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in ml_pb2_grpc.py depends on'
+        + f' but the generated code in emb_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -36,13 +36,13 @@ class VectorStub(object):
         """
         self.Train = channel.unary_unary(
                 '/ml.Vector/Train',
-                request_serializer=ml__pb2.TrainRequest.SerializeToString,
-                response_deserializer=ml__pb2.TrainResponse.FromString,
+                request_serializer=emb__pb2.TrainRequest.SerializeToString,
+                response_deserializer=emb__pb2.TrainResponse.FromString,
                 _registered_method=True)
         self.Search = channel.unary_unary(
                 '/ml.Vector/Search',
-                request_serializer=ml__pb2.SearchRequest.SerializeToString,
-                response_deserializer=ml__pb2.SearchResponse.FromString,
+                request_serializer=emb__pb2.SearchRequest.SerializeToString,
+                response_deserializer=emb__pb2.SearchResponse.FromString,
                 _registered_method=True)
 
 
@@ -66,13 +66,13 @@ def add_VectorServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Train': grpc.unary_unary_rpc_method_handler(
                     servicer.Train,
-                    request_deserializer=ml__pb2.TrainRequest.FromString,
-                    response_serializer=ml__pb2.TrainResponse.SerializeToString,
+                    request_deserializer=emb__pb2.TrainRequest.FromString,
+                    response_serializer=emb__pb2.TrainResponse.SerializeToString,
             ),
             'Search': grpc.unary_unary_rpc_method_handler(
                     servicer.Search,
-                    request_deserializer=ml__pb2.SearchRequest.FromString,
-                    response_serializer=ml__pb2.SearchResponse.SerializeToString,
+                    request_deserializer=emb__pb2.SearchRequest.FromString,
+                    response_serializer=emb__pb2.SearchResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -100,8 +100,8 @@ class Vector(object):
             request,
             target,
             '/ml.Vector/Train',
-            ml__pb2.TrainRequest.SerializeToString,
-            ml__pb2.TrainResponse.FromString,
+            emb__pb2.TrainRequest.SerializeToString,
+            emb__pb2.TrainResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -127,8 +127,8 @@ class Vector(object):
             request,
             target,
             '/ml.Vector/Search',
-            ml__pb2.SearchRequest.SerializeToString,
-            ml__pb2.SearchResponse.FromString,
+            emb__pb2.SearchRequest.SerializeToString,
+            emb__pb2.SearchResponse.FromString,
             options,
             channel_credentials,
             insecure,
