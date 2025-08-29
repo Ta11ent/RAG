@@ -1,34 +1,51 @@
 ﻿using AI_service.Shared.Outcome;
+using AI_service.Shared.Services.ml_service;
+using Ml;
 
 namespace AI_service.Feature.TrainModel
 {
     internal sealed class TrainModelCommandHandler : IRequestHandler<TrainModelCommand>
     {
-        private readonly IVectorRepository _repository;
-      //  private readonly ITrainMlService _trainService;
+        private readonly ITrainService _trainService;
+        private readonly IMlServiceClient _mlService;
 
         public TrainModelCommandHandler(
-            IVectorRepository repository)
+            ITrainService trainService,
+            IMlServiceClient mlService)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            //_trainService = trainService ?? throw new ArgumentNullException(nameof(trainService));
+            _trainService = trainService ?? throw new ArgumentNullException(nameof(trainService));
+            _mlService = mlService ?? throw new ArgumentNullException(nameof(mlService));
         }
 
         public async Task<Result> Handle(TrainModelCommand command, CancellationToken cancellationToken)
         {
-            var tag = await _repository.GetTagAsync(command.tagId, cancellationToken);
-            if (tag is null)
-                return Result.Failure(DomainErrors.Tag.NotFound(command.tagId));
+            var tags = await _trainService.GetNonExistentTagsAsync(command.tagIds, cancellationToken);
+            if (tags.Any())
+                return Result.Failure(DomainErrors.Tag.NotFound(tags));
 
-            var textId = await _repository.AddOriginalContent(command.content, cancellationToken);
+            var payloadId = await _trainService.AddPayloadtAsync(command.content, command.tagIds, cancellationToken);
 
-            //var vectorId = await _trainService.TrainModel(command.content, command.tagId, cancellationToken);
+            var dataEntry = CreateDataEntry(command.content, tags);
+            var response = await _mlService.TrainAsync(new[] { dataEntry });
 
-            Guid vectorId = Guid.NewGuid();//temp
-
-            await _repository.AddVectorAsync(command.tagId, vectorId, textId, cancellationToken);
+            if (response.Success)
+            {
+                var vectorId = Guid.Parse(response.Ids.First());
+                await _trainService.AddVectorAsync(payloadId, vectorId, cancellationToken);
+            }
+            else
+            {
+                await _trainService.AddPendingTrainAsync(payloadId, cancellationToken);
+            }
 
             return Result.Success();
         }
+
+        private static DataEntry CreateDataEntry(string content, Guid[] tags) =>
+            new()
+            {
+                Text = content,
+                Tags = { tags.Select(tagId => tagId.ToString()) }
+            };
     }
 }

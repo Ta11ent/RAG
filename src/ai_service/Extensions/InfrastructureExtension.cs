@@ -9,11 +9,13 @@ namespace AI_service.Extensions
         {
             services.AddGrpcClient<Ml.Vector.VectorClient>(client =>
             {
+                var test = configuration["MLService:GrpcUrl"]!;
                 client.Address = new Uri(configuration["MLService:GrpcUrl"]!);
             })
             .AddInterceptor<RetryInceraptor>();
 
             services.AddTransient<IMlServiceClient, MlServiceClient>();
+            services.AddTransient<RetryInceraptor>();
 
             return services;
         }

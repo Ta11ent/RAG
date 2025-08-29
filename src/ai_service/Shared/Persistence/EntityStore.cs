@@ -15,7 +15,7 @@ namespace AI_service.Shared.Data
             this IDbConnection connection,
             T entity,
             IDbTransaction? transaction = null,
-            CancellationToken cancellationToken = default) where T : class
+            CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

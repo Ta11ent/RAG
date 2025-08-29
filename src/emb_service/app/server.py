@@ -1,11 +1,11 @@
 import os
 from concurrent import futures
 import grpc
-from generated import ml_pb2, ml_pb2_grpc
+from generated import emb_pb2, emb_pb2_grpc
 from model import VectorModel
 
 
-class VectorService(ml_pb2_grpc.VectorServicer):
+class VectorService(emb_pb2_grpc.VectorServicer):
     def __init__(self):
         self.model = VectorModel()
 
@@ -15,14 +15,14 @@ class VectorService(ml_pb2_grpc.VectorServicer):
 
         search_results = []
         for r in results:
-            search_results.append(ml_pb2.SearchResult(
+            search_results.append(emb_pb2.SearchResult(
                 id=r["id"],
                 #text=r["text"],
                 #score=r["score"],
                 #tags=r["tags"]
             ))
 
-        return ml_pb2.SearchResponse(results=search_results)
+        return emb_pb2.SearchResponse(results=search_results)
 
     def Train(self, request, context):
         entries = []
@@ -33,13 +33,13 @@ class VectorService(ml_pb2_grpc.VectorServicer):
             })
 
         ids = self.model.train(entries)
-        return ml_pb2.TrainResponse(success=True, ids=ids)
+        return emb_pb2.TrainResponse(success=True, ids=ids)
 
 
 def serve():
     port = os.getenv("PORT", 50051)
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    ml_pb2_grpc.add_VectorServicer_to_server(VectorService(), server)
+    emb_pb2_grpc.add_VectorServicer_to_server(VectorService(), server)
     server.add_insecure_port(f'[::]:{port}')
     server.start()
     print(f"gRPC server running on port {port}...")

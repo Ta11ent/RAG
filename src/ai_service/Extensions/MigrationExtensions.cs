@@ -12,7 +12,7 @@ namespace AI_service.Extensions
                 .GetRequiredService<IConfiguration>()
                 .GetConnectionString("PostgreSQL");
 
-            var migrationsPath = Path.Combine(Directory.GetCurrentDirectory(), "Shared", "Data", "Migrations");
+            var migrationsPath = Path.Combine(Directory.GetCurrentDirectory(), "Shared", "Persistence", "Migrations");
 
             var upgrader = DeployChanges.To
                 .PostgresqlDatabase(connectionString) 

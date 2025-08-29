@@ -1,25 +1,30 @@
-CREATE TABLE Texts (
+CREATE TABLE Payloads (
     Id UUID UNIQUE NOT NULL PRIMARY KEY,  
-    Content TEXT NOT NULL                 
+    Value TEXT NOT NULL,
+    CreatedAt TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE Tags (
     Id UUID UNIQUE NOT NULL PRIMARY KEY, 
-    Name VARCHAR(50) NOT NULL UNIQUE   
+    Name VARCHAR(50) NOT NULL UNIQUE,   
+    Description TEXT NOT NULL
+);
+
+CREATE TABLE PayloadTags (
+    PayloadId UUID NOT NULL REFERENCES Payloads(Id) ON DELETE CASCADE,
+    TagId UUID NOT NULL REFERENCES Tags(Id) ON DELETE CASCADE,
+    PRIMARY KEY (PayloadId, TagId)
 );
 
 CREATE TABLE Vectors (
     Id UUID UNIQUE NOT NULL PRIMARY KEY,          
-    TextId UUID NOT NULL,                           
-    VectorId UUID NOT NULL,                        
-    CreatedAt TIMESTAMPTZ DEFAULT NOW(),            
-    CONSTRAINT fk_text_id FOREIGN KEY (TextId) REFERENCES Texts(Id) ON DELETE CASCADE  
+    PayloadId UUID NOT NULL REFERENCES Payloads(Id) ON DELETE CASCADE,                           
+    VectorId UUID NOT NULL,                         
+    CreatedAt TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE VectorTags (
-    VectorId UUID NOT NULL REFERENCES Vectors(Id) ON DELETE CASCADE,  
-    TagId UUID NOT NULL REFERENCES Tags(Id) ON DELETE CASCADE,      
-    PRIMARY KEY (VectorId, TagId)  
+CREATE TABLE PendingTrains (
+    Id UUID UNIQUE NOT NULL PRIMARY KEY,
+    PayloadId UUID NOT NULL REFERENCES Payloads(Id) ON DELETE CASCADE,
+    CreatedAt TIMESTAMPTZ DEFAULT now()
 );
-
-CREATE INDEX idx_vectortags_vectorid ON VectorTags (VectorId);

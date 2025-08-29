@@ -2,22 +2,20 @@
 
 namespace AI_service.Shared.Domain.Entities
 {
-    [Table("Vectors")]
-    public class Vector
+    [Table("PandingTrains")]
+    public class PendingTrain
     {
         public Guid Id { get; init; }
         public Guid PayloadId { get; init; }
-        public Guid VectorId { get; init; }
         public DateTime CreatedAt { get; init; }
 
-        public static Vector Create(Guid payloadId, Guid vectorId)
+        public static PendingTrain Create(Guid payloadId)
         {
-            return new()
+            return new PendingTrain
             {
                 Id = Guid.NewGuid(),
-                VectorId = vectorId,
                 PayloadId = payloadId,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
             };
         }
     }
