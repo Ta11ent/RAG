@@ -1,4 +1,4 @@
-name: .NET CI – Ai_service
+name: .NET CI – RAG_service
 
 on:
   pull_request:
